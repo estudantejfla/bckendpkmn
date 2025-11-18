@@ -1,24 +1,26 @@
 import { Router } from "express";
-import { PrismaClient } from "@prisma/client";
+import prisma from "../db.js";
 
-const prisma = new PrismaClient();
 const router = Router();
 
-// GET ALL POSTS
 router.get("/", async (req, res) => {
-  const posts = await prisma.post.findMany({ include: { author: true } });
-  res.json(posts);
+  try {
+    const posts = await prisma.post.findMany({ include: { author: true }, orderBy: { createdAt: "desc" } });
+    res.json(posts);
+  } catch (err) {
+    res.status(500).json({ error: "Erro ao buscar posts" });
+  }
 });
 
-// CREATE POST
 router.post("/", async (req, res) => {
   const { title, content, authorId } = req.body;
-
-  const post = await prisma.post.create({
-    data: { title, content, authorId },
-  });
-
-  res.json(post);
+  if (!title || !content || !authorId) return res.status(400).json({ error: "Missing fields" });
+  try {
+    const post = await prisma.post.create({ data: { title, content, authorId } });
+    res.json(post);
+  } catch (err) {
+    res.status(500).json({ error: "Erro ao criar post" });
+  }
 });
 
 export default router;
