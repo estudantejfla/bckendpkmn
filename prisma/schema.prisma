@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+//
+// USERS
+//
+model User {
+  id          String    @id @default(cuid())
+  username    String    @unique
+  email       String    @unique
+  password    String    // hashed password
+  createdAt   DateTime  @default(now())
+
+  // Relations
+  posts       Post[]
+  teams       Team[]
+  depoimentos Depoimento[]
+}
+
+//
+// POSTS (Blog / Announcements)
+//
+model Post {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  createdAt DateTime @default(now())
+
+  // Relations
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+}
+
+//
+// TEAMS CREATED BY USERS
+//
+model Team {
+  id         String    @id @default(cuid())
+  name       String
+  description String?
+  pokemon     Json      // store team data as JSON (like poke1, poke2...)
+  createdAt   DateTime  @default(now())
+
+  // Relations
+  ownerId     String
+  owner       User      @relation(fields: [ownerId], references: [id])
+
+  sharedTeam  SharedTeam?
+}
+
+//
+// SHARED TEAMS (public teams)
+//
+model SharedTeam {
+  id        String   @id @default(cuid())
+  teamId    String   @unique
+  createdAt DateTime @default(now())
+
+  // Relation
+  team      Team     @relation(fields: [teamId], references: [id])
+}
+
+//
+// DEPOIMENTOS (comments/testimonials)
+//
+model Depoimento {
+  id        String   @id @default(cuid())
+  message   String
+  createdAt DateTime @default(now())
+
+  // Relations
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+}
