@@ -44,27 +44,15 @@ model Team {
   id         String    @id @default(cuid())
   name       String
   description String?
-  pokemon     Json      // store team data as JSON (like poke1, poke2...)
+  pokemon     Json
   createdAt   DateTime  @default(now())
-
-  // Relations
   ownerId     String
   owner       User      @relation(fields: [ownerId], references: [id])
 
-  sharedTeam  SharedTeam?
+  shared      Boolean   @default(false)
 }
 
-//
-// SHARED TEAMS (public teams)
-//
-model SharedTeam {
-  id        String   @id @default(cuid())
-  teamId    String   @unique
-  createdAt DateTime @default(now())
 
-  // Relation
-  team      Team     @relation(fields: [teamId], references: [id])
-}
 
 //
 // DEPOIMENTOS (comments/testimonials)
