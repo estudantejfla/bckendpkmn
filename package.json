@@ -1,11 +1,19 @@
 {
-  "name": "sitepkmn2-main",
+  "name": "bckendpkmn",
   "version": "1.0.0",
   "type": "module",
   "main": "src/server.js",
   "scripts": {
-    "dev": "node src/server.js",
     "start": "node src/server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "cors": "^2.8.5",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "@prisma/client": "^5.0.0"
+  },
+  "devDependencies": {
+    "prisma": "^5.0.0"
   }
 }
-
