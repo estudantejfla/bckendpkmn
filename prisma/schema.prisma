@@ -33,11 +33,10 @@ model Team {
   id          String    @id @default(cuid())
   name        String
   description String?
-  pokemon     Json
+  pokemon     String[]
   createdAt   DateTime  @default(now())
   ownerId     String
   owner       User      @relation(fields: [ownerId], references: [id])
-
   shared      Boolean   @default(false)
 }
 
