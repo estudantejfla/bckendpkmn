@@ -126,4 +126,23 @@ router.get("/shared", async (req, res) => {
   }
 });
 
+router.post("/share/:id", async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    const team = await prisma.team.update({
+      where: { id: id },   // <-- SEU ID É STRING! DEVE FICAR ASSIM!
+      data: { shared: true }
+    });
+
+    return res.json({ success: true, team });
+
+  } catch (err) {
+    console.error("Erro ao compartilhar:", err);
+    return res.status(500).json({ error: "Erro ao compartilhar time" });
+  }
+});
+
+
 export default router;
+
