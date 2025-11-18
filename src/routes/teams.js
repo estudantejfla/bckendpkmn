@@ -26,14 +26,23 @@ router.post("/", async (req, res) => {
 });
 
 // compartilahar TIME
-router.post("/share/:teamId", async (req, res) => {
-  const teamId = req.params.teamId;
+// Compartilhar time
+router.post("/share/:id", async (req, res) => {
+  const teamId = req.params.id;
 
-  const shared = await prisma.sharedTeam.create({
-    data: { teamId },
-  });
+  try {
+    const updated = await prisma.team.update({
+      where: { id: teamId },
+      data: { shared: true }
+    });
 
-  res.json(shared);
+    res.json({ success: true, team: updated });
+
+  } catch (err) {
+    res.status(500).json({ error: "Erro ao compartilhar time" });
+  }
 });
+
+
 
 export default router;
