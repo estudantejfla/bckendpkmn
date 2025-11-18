@@ -7,42 +7,31 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-//
-// USERS
-//
 model User {
   id          String    @id @default(cuid())
   username    String    @unique
   email       String    @unique
-  password    String    // hashed password
+  password    String
   createdAt   DateTime  @default(now())
 
-  // Relations
   posts       Post[]
   teams       Team[]
   depoimentos Depoimento[]
 }
 
-//
-// POSTS (Blog / Announcements)
-//
 model Post {
   id        String   @id @default(cuid())
   title     String
   content   String
   createdAt DateTime @default(now())
 
-  // Relations
   authorId  String
   author    User     @relation(fields: [authorId], references: [id])
 }
 
-//
-// TEAMS CREATED BY USERS
-//
 model Team {
-  id         String    @id @default(cuid())
-  name       String
+  id          String    @id @default(cuid())
+  name        String
   description String?
   pokemon     Json
   createdAt   DateTime  @default(now())
@@ -52,17 +41,11 @@ model Team {
   shared      Boolean   @default(false)
 }
 
-
-
-//
-// DEPOIMENTOS (comments/testimonials)
-//
 model Depoimento {
   id        String   @id @default(cuid())
   message   String
   createdAt DateTime @default(now())
 
-  // Relations
   userId    String
   user      User     @relation(fields: [userId], references: [id])
 }
