@@ -3,6 +3,17 @@ import prisma from "../db.js";
 
 const router = express.Router();
 
+router.get("/", async (req, res) => {
+  try {
+    const teams = await prisma.team.findMany({
+      orderBy: { createdAt: "desc" }
+    });
+    res.json(teams);
+  } catch (err) {
+    res.status(500).json({ error: "Erro ao buscar times" });
+  }
+});
+
 router.get("/user/:id", async (req, res) => {
   try {
     const teams = await prisma.team.findMany({
@@ -20,9 +31,7 @@ router.get("/:id", async (req, res) => {
     const team = await prisma.team.findUnique({
       where: { id: req.params.id }
     });
-
     if (!team) return res.status(404).json({ error: "Time não encontrado" });
-
     res.json(team);
   } catch (err) {
     res.status(500).json({ error: "Erro ao buscar time" });
@@ -31,7 +40,6 @@ router.get("/:id", async (req, res) => {
 
 router.post("/", async (req, res) => {
   const { ownerId, name, pokemon, description } = req.body;
-
   try {
     const team = await prisma.team.create({
       data: {
@@ -50,7 +58,6 @@ router.post("/", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
   const { name, pokemon, description } = req.body;
-
   try {
     const team = await prisma.team.update({
       where: { id: req.params.id },
