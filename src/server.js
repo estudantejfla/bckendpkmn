@@ -7,9 +7,8 @@ import depoRoutes from "./routes/depoimentos.js";
 
 const app = express();
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ strict: false }));
 
-// Routes
 app.use("/auth", authRoutes);
 app.use("/posts", postRoutes);
 app.use("/teams", teamRoutes);
