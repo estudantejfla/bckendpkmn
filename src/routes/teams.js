@@ -1,21 +1,22 @@
-import express from "express";
+import express from "express"; 
 import prisma from "../db.js";
 
 const router = express.Router();
 
+/* GET teams from a user */
 router.get("/user/:id", async (req, res) => {
   try {
     const teams = await prisma.team.findMany({
       where: { ownerId: req.params.id },
       orderBy: { createdAt: "desc" }
     });
-
     res.json(teams);
   } catch (err) {
     res.status(500).json({ error: "Erro ao buscar times" });
   }
 });
 
+/* GET one team */
 router.get("/:id", async (req, res) => {
   try {
     const team = await prisma.team.findUnique({
@@ -30,6 +31,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+/* CREATE new team */
 router.post("/", async (req, res) => {
   const { ownerId, name, pokemon, description } = req.body;
 
@@ -50,6 +52,7 @@ router.post("/", async (req, res) => {
   }
 });
 
+/* UPDATE existing team */
 router.put("/:id", async (req, res) => {
   const { name, pokemon, description } = req.body;
 
@@ -65,6 +68,7 @@ router.put("/:id", async (req, res) => {
   }
 });
 
+/* DELETE team */
 router.delete("/:id", async (req, res) => {
   try {
     await prisma.team.delete({
@@ -77,23 +81,21 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
+/* SHARE team (toggle shared = true) */
 router.post("/share/:id", async (req, res) => {
-  const id = req.params.id;
-
   try {
     const team = await prisma.team.update({
-      where: { id },
+      where: { id: req.params.id },
       data: { shared: true }
     });
 
-    return res.json({ success: true, team });
-
+    res.json({ success: true, team });
   } catch (err) {
-    console.error("Erro ao compartilhar:", err);
-    return res.status(500).json({ error: "Erro ao compartilhar time" });
+    res.status(500).json({ error: "Erro ao compartilhar time" });
   }
 });
 
+/* GET all shared teams */
 router.get("/shared", async (req, res) => {
   try {
     const teams = await prisma.team.findMany({
